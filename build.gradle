@@ -1,6 +1,11 @@
-plugins {
-    id 'java'
+buildscript {
+    repositories {
+        mavenLocal()
+    }
 }
+
+apply plugin: 'java'
+apply plugin: 'maven-publish'
 
 group 'com.diegoferbp.iso'
 version '1.0-SNAPSHOT'
@@ -8,6 +13,7 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 project.ext {
