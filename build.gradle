@@ -10,7 +10,77 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
+project.ext {
+    jaxbTargetDir = file("${buildDir}/generated/java")
+
+}
+
+sourceSets {
+    generated {
+        java.srcDir "${buildDir}/generated/java"
+    }
+}
+
+configurations {
+    xsd2java
+}
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    xsd2java "com.sun.xml.bind:jaxb-xjc:2.2.6"
+    xsd2java "com.sun.xml.bind:jaxb-impl:2.2.6"
+
 }
+
+task xsd2java() {
+
+    doLast {
+        jaxbTargetDir.mkdirs()
+
+        ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.xsd2java.asPath)
+        ant.jaxbTargetDir = jaxbTargetDir
+
+
+        ant.xjc(
+                destdir: '${jaxbTargetDir}',
+                package: 'com.diegoferbp.iso.pacs008',
+                schema: 'src/main/resources/pacs.008.001.07.xsd'
+        )
+
+        ant.xjc(
+                destdir: '${jaxbTargetDir}',
+                package: 'com.diegoferbp.iso.pacs007',
+                schema: 'src/main/resources/pacs.007.001.07.xsd'
+        )
+
+        ant.xjc(
+                destdir: '${jaxbTargetDir}',
+                package: 'com.diegoferbp.iso.pacs003',
+                schema: 'src/main/resources/pacs.003.001.07.xsd'
+        )
+
+        ant.xjc(
+                destdir: '${jaxbTargetDir}',
+                package: 'com.diegoferbp.iso.pacs004',
+                schema: 'src/main/resources/pacs.004.001.07.xsd'
+        )
+
+        ant.xjc(
+                destdir: '${jaxbTargetDir}',
+                package: 'com.diegoferbp.iso.pacs002',
+                schema: 'src/main/resources/pacs.002.001.07.xsd'
+        )
+        ant.xjc(
+                destdir: '${jaxbTargetDir}',
+                package: 'com.diegoferbp.iso.camt056',
+                schema: 'src/main/resources/camt.056.001.07.xsd'
+        )
+        ant.xjc(
+                destdir: '${jaxbTargetDir}',
+                package: 'com.diegoferbp.iso.camt029',
+                schema: 'src/main/resources/camt.029.001.07.xsd'
+        )
+    }
+}
+compileJava.dependsOn xsd2java
+compileJava.source sourceSets.generated.java, sourceSets.main.java
